@@ -1,25 +1,35 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
+import heroRoad from '../assets/images/road.jpeg'
 
+/** Local hero + curated Unsplash (tea hills / plantations / roads) — IDs unique vs rest of repo */
 const collage = [
   {
-    src: 'https://images.pexels.com/photos/2132126/pexels-photo-2132126.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Rolling green tea terraces',
+    id: 'local-road',
+    src: heroRoad,
+    alt: 'Colourful open jeeps on a rainy mountain road beside tea-country forest',
     className: 'md:col-span-2 md:row-span-2',
+    eager: true,
   },
   {
-    src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop',
-    alt: 'Misty hills at sunrise',
+    id: 'mist-tea-hills-munnar',
+    src:
+      'https://images.unsplash.com/photo-1764012393710-be2d33971ac0?q=85&w=2000&auto=format&fit=crop',
+    alt: 'Rolling green tea terraces on a misty hillside',
     className: '',
   },
   {
-    src: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Tropical luxury pool',
+    id: 'mist-tea-expanse',
+    src:
+      'https://images.unsplash.com/photo-1748753777924-fc373a37cbd5?q=85&w=2000&auto=format&fit=crop',
+    alt: 'Tea plantation disappearing into clouds over lush ridges',
     className: '',
   },
   {
-    src: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop',
-    alt: 'Serene lake and forest',
+    id: 'forest-road',
+    src:
+      'https://images.unsplash.com/photo-1775548772000-6c87b80a2aae?q=85&w=2000&auto=format&fit=crop',
+    alt: 'Tree-lined paved road bending through emerald highland forest',
     className: 'md:col-span-2',
   },
 ]
@@ -44,7 +54,7 @@ export function CoverSection() {
           <div className="grid grid-cols-2 grid-rows-2 gap-2 p-3 md:gap-3 md:p-4">
             {collage.map((img, i) => (
               <motion.div
-                key={img.src}
+                key={img.id}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-10%' }}
@@ -54,10 +64,12 @@ export function CoverSection() {
                 <img
                   src={img.src}
                   alt={img.alt}
-                  className="h-full min-h-[140px] w-full object-cover transition duration-700 hover:scale-105 md:min-h-[180px]"
-                  loading="lazy"
+                  className="h-full min-h-[160px] w-full object-cover object-center transition duration-700 hover:scale-105 md:min-h-[200px]"
+                  loading={img.eager ? 'eager' : 'lazy'}
+                  decoding="async"
+                  {...(img.eager ? { fetchPriority: 'high' } : {})}
                 />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
               </motion.div>
             ))}
           </div>
