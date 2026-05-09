@@ -1,5 +1,4 @@
 import { Navbar } from '../components/Navbar'
-import { CoverSection } from '../components/CoverSection'
 import { SearchSection } from '../components/SearchSection'
 import { FeaturedSection } from '../components/FeaturedSection'
 import { FilterBar } from '../components/FilterBar'
@@ -25,7 +24,6 @@ export function HomePage() {
     <>
       <Navbar />
       <main className="relative z-10">
-        <CoverSection />
         <SearchSection />
         <FeaturedSection />
         <FilterBar

@@ -28,7 +28,7 @@ export function SearchSection() {
   return (
     <section
       id="search"
-      className="relative z-10 mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-10"
+      className="relative z-10 mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-10 mt-20"
     >
       <motion.div
         initial={{ opacity: 0, y: 32 }}
