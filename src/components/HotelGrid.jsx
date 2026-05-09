@@ -1,8 +1,14 @@
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { HotelCard } from './HotelCard'
+import { HotelDetailModal } from './HotelDetailModal'
 
 /** @param {{ hotels: import('../data/hotels.js').Hotel[] }} props */
 export function HotelGrid({ hotels }) {
+  const [detailHotel, setDetailHotel] = useState(
+    /** @type {import('../data/hotels.js').Hotel | null} */ (null),
+  )
+
   return (
     <section
       id="browse"
@@ -49,11 +55,20 @@ export function HotelGrid({ hotels }) {
             className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
           >
             {hotels.map((h) => (
-              <HotelCard key={h.id} hotel={h} />
+              <HotelCard
+                key={h.id}
+                hotel={h}
+                onViewDetails={() => setDetailHotel(h)}
+              />
             ))}
           </motion.div>
         )}
       </AnimatePresence>
+
+      <HotelDetailModal
+        hotel={detailHotel}
+        onClose={() => setDetailHotel(null)}
+      />
     </section>
   )
 }

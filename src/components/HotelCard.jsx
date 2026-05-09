@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
 import { formatBDT } from '../utils/format'
 
-/** @param {{ hotel: import('../data/hotels.js').Hotel }} props */
-export function HotelCard({ hotel }) {
+/** @param {{ hotel: import('../data/hotels.js').Hotel; onViewDetails: () => void }} props */
+export function HotelCard({ hotel, onViewDetails }) {
   return (
     <motion.article
       layout
@@ -74,6 +74,7 @@ export function HotelCard({ hotel }) {
             className="rounded-full bg-gradient-to-r from-luxe-gold to-amber-200 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-luxe-ink shadow-luxe"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
+            onClick={onViewDetails}
           >
             View Details
           </motion.button>
