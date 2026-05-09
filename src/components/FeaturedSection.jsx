@@ -35,8 +35,9 @@ export function FeaturedSection() {
             Featured Sylhet stays
           </h2>
           <p className="mt-3 max-w-xl text-sm text-white/58">
-            Residences that define the region — immersive tea vistas, restorative
-            spa journeys, and service tuned to intuition.
+            Curated estates from your partner brief — marquee city anchors plus
+            tea-belt corridors; pricing reflects published “from” BDT tiers
+            before VAT/service.
           </p>
         </div>
       </div>

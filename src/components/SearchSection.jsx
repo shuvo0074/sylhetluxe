@@ -46,8 +46,9 @@ export function SearchSection() {
               Find your Sylhet sanctuary
             </h2>
             <p className="mt-2 max-w-xl text-sm text-white/60">
-              Static demo search — wire your engine later. Every field is primed
-              for a premium booking flow.
+              Curated luxury partners across metropolitan Sylhet and the greater
+              division — nightly rates shown are illustrative; confirm live prices
+              on Booking.com / brand portals.
             </p>
           </div>
         </div>
@@ -117,10 +118,10 @@ export function SearchSection() {
           id="stats-trigger"
           className="mt-10 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 md:grid-cols-4"
         >
-          <Stat end={50} suffix="+" label="Hotels" />
-          <Stat end={20} suffix="+" label="Resorts" />
-          <Stat end={10000} suffix="+" label="Guests hosted" />
-          <Stat end={48} suffix="" label="Average rating" decimals={1} />
+          <Stat end={12} suffix="+" label="Partner stays" />
+          <Stat end={11} suffix="+" label="Resort escapes" />
+          <Stat end={1} suffix="" label="City flagship" />
+          <Stat end={47} suffix="" label="Avg. guest rating" decimals={1} />
         </div>
       </motion.div>
     </section>

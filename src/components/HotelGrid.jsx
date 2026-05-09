@@ -17,9 +17,11 @@ export function HotelGrid({ hotels }) {
             Sylhet hotels & resorts
           </h2>
           <p className="mt-2 max-w-2xl text-sm text-white/58">
-            Every listing is rooted in the region — from city icons to tea-hill
-            sanctuaries. Demo data only; swap in live inventory when you connect
-            your stack.
+            Homepage inventory is intentionally limited to the twelve flagged
+            partners—metropolitan Sylhet plus luxury outbound corridors. Card photos
+            mirror official marketing, Booking.com (Rangauti), Trip.com (DuSai),
+            Hello Sylhet (Regent Park), and bd-info (Palace)—swap for brand kit when
+            supplied.
           </p>
         </div>
         <p className="text-sm text-white/45">
