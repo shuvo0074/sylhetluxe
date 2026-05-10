@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { LUXURY_MIN_PRICE_BDT } from '../data/hotels.js'
 
 const defaultState = () => ({
-  sort: 'price-asc',
+  sort: null,
   guestFilter: null,
   typeFilter: 'all',
   ratingFilter: null,
@@ -55,8 +55,9 @@ export function useHotelFilters(hotels) {
     else if (filters.tierFilter === 'budget')
       list = list.filter((h) => h.price < LUXURY_MIN_PRICE_BDT)
 
+    const sortMode = filters.sort ?? 'price-asc'
     list.sort((a, b) =>
-      filters.sort === 'price-desc' ? b.price - a.price : a.price - b.price,
+      sortMode === 'price-desc' ? b.price - a.price : a.price - b.price,
     )
 
     return list
