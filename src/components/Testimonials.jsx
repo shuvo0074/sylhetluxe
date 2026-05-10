@@ -1,29 +1,25 @@
 import { motion } from 'framer-motion'
 
+/** Themes echo public bios; illustrative only—not endorsements of this site. */
 const testimonials = [
   {
     quote:
-      'The tea-garden dawn from our suite was unreal. Service felt like a private members’ club — intuitive, never intrusive.',
-    name: 'Amara Rahman',
-    role: 'Creative Director · London',
+      'Bangladesh’s northeast—tea gardens, hillside cloud, and wetland light—rewards the slow, fact-checked story. I still treat every trip like a newsroom assignment: research first, then let the road rewrite the outline.',
+    name: 'Salahuddin Sumon',
+    role: 'Travel journalist & documentary creator · Salahuddin Sumon (YouTube)',
     avatar:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Sumon_in_front_of_Everest_Base_Camp_in_Tibet_2025_2.jpg/1920px-Sumon_in_front_of_Everest_Base_Camp_in_Tibet_2025_2.jpg',
+    avatarAlt: 'Salahuddin Sumon',
+    imgClass: 'object-cover object-top',
   },
   {
     quote:
-      'We hosted our anniversary at a Sylhet hill resort through this flow. Every detail, from airport pickup to turndown, was orchestrated.',
-    name: 'James & Lina Ho',
-    role: 'Travellers · Singapore',
-    avatar:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
-  },
-  {
-    quote:
-      'As a travel advisor, presentation matters. This layout finally matches the calibre of the properties Sylhet is known for.',
-    name: 'Sofia Karim',
-    role: 'Luxury Travel Advisor · NYC',
-    avatar:
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop',
+      'From district roads to border towns, the goal is the same: show real places, food, and history so viewers can plan with context. Northeast Bangladesh—Sylhet division especially—still has chapters most playlists haven’t caught up with.',
+    name: 'Nadir Nibras',
+    role: 'Travel filmmaker · Nadir On The Go (YouTube)',
+    avatar: '/testimonials/nadir-nibras-channel.jpg',
+    avatarAlt: 'Nadir Nibras · Nadir On The Go channel image',
+    imgClass: 'object-cover object-center scale-110',
   },
 ]
 
@@ -38,19 +34,23 @@ export function Testimonials() {
           Voices from the valley
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-sm text-white/55">
-          Fictional testimonials for your client presentation — swap with real
-          reviews when you go live.
+          Two Bangladeshi creators who built large audiences on disciplined
+          travel storytelling—why Sylhet still feels like the headline act.
         </p>
       </div>
 
-      <div className="mt-12 grid gap-6 md:grid-cols-3">
+      <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
         {testimonials.map((t, i) => (
           <motion.figure
             key={t.name}
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-10%' }}
-            transition={{ delay: i * 0.1, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              delay: i * 0.1,
+              duration: 0.65,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             whileHover={{ y: -6 }}
             className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-8 text-left shadow-card backdrop-blur-xl"
           >
@@ -61,11 +61,12 @@ export function Testimonials() {
             <figcaption className="relative mt-8 flex items-center gap-4">
               <img
                 src={t.avatar}
-                alt=""
-                className="h-12 w-12 rounded-full object-cover ring-2 ring-luxe-gold/30"
+                alt={t.avatarAlt}
+                referrerPolicy="no-referrer"
+                className={`h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-luxe-gold/30 ${t.imgClass ?? ''}`}
                 loading="lazy"
               />
-              <div>
+              <div className="min-w-0">
                 <p className="font-medium text-white">{t.name}</p>
                 <p className="text-xs text-white/45">{t.role}</p>
               </div>
@@ -73,6 +74,21 @@ export function Testimonials() {
           </motion.figure>
         ))}
       </div>
+
+      <p className="mx-auto mt-8 max-w-3xl text-center text-[11px] leading-relaxed text-white/35">
+        Salahuddin Sumon portrait © ItsNilayKumarBiswas,{' '}
+        <a
+          href="https://commons.wikimedia.org/wiki/File:Sumon_in_front_of_Everest_Base_Camp_in_Tibet_2025_2.jpg"
+          className="text-white/45 underline underline-offset-2 hover:text-white/65"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          CC&nbsp;BY-SA&nbsp;4.0 (Wikimedia Commons)
+        </a>
+        . Nadir Nibras image from the official <em>Nadir On The Go</em>{' '}
+        channel. Quotations summarise public themes—they are not testimonials
+        for this demo.
+      </p>
     </section>
   )
 }
