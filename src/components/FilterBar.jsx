@@ -1,5 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+
+/**
+ * Shrink a bit sooner: once sentinel is IO-non-intersecting and its top is above
+ * this line (viewport px). Expand logic is unchanged below.
+ */
+const MOBILE_SHRINK_SENTINEL_TOP_UNDER_PX = 132
 
 const mobileToggleIconBtn =
   'absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/18 bg-black/35 text-white/90 backdrop-blur-md transition hover:border-luxe-gold/45 hover:bg-white/10 hover:text-white'
@@ -305,16 +311,90 @@ export function FilterBar({
   setTierFilter,
   resetFilters,
 }) {
-  // Mobile only: false = collapsed (shrunk) — default on first load and when entering <md.
-  const [expanded, setExpanded] = useState(false)
+  // Mobile only: collapsed = shrunk. Sticky lives on a plain div so Framer Motion
+  // never applies transform to the sticky ancestor (transform breaks position:sticky).
+  const [expanded, setExpanded] = useState(true)
+  const sentinelRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+  /** True after user has scrolled below the sentinel (past the filters); drives expand-on-return. */
+  const wasPastSentinel = useRef(false)
+  const lastScrollY = useRef(
+    typeof window !== 'undefined' ? window.scrollY : 0,
+  )
+  const scrollGoingUp = useRef(false)
+
+  useEffect(() => {
+    lastScrollY.current = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      scrollGoingUp.current = y < lastScrollY.current - 2
+      lastScrollY.current = y
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)')
     const onCross = () => {
-      if (!mq.matches) setExpanded(false)
+      if (!mq.matches) setExpanded(true)
     }
     mq.addEventListener('change', onCross)
     return () => mq.removeEventListener('change', onCross)
+  }, [])
+
+  /** Mobile: collapse when scrolled past sentinel; expand when scrolling back and sentinel re-enters. */
+  useEffect(() => {
+    const mobileMq = '(max-width: 767px)'
+    const mq = window.matchMedia(mobileMq)
+
+    let observer = /** @type {IntersectionObserver | null} */ (null)
+
+    const attach = () => {
+      if (!mq.matches || !sentinelRef.current) return
+
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          const r = entry.boundingClientRect
+          const past =
+            !entry.isIntersecting &&
+            r.top < MOBILE_SHRINK_SENTINEL_TOP_UNDER_PX
+
+          if (past) {
+            wasPastSentinel.current = true
+            setExpanded(false)
+          } else if (
+            entry.isIntersecting &&
+            wasPastSentinel.current &&
+            scrollGoingUp.current
+          ) {
+            wasPastSentinel.current = false
+            setExpanded(true)
+          }
+        },
+        { root: null, rootMargin: '0px', threshold: [0, 1] },
+      )
+      observer.observe(sentinelRef.current)
+    }
+
+    const detach = () => {
+      observer?.disconnect()
+      observer = null
+    }
+
+    attach()
+
+    const onMqChange = () => {
+      detach()
+      if (!mq.matches) wasPastSentinel.current = false
+      requestAnimationFrame(attach)
+    }
+
+    mq.addEventListener('change', onMqChange)
+
+    return () => {
+      mq.removeEventListener('change', onMqChange)
+      detach()
+    }
   }, [])
 
   const chip =
@@ -336,13 +416,14 @@ export function FilterBar({
   const collapseChips = activeFilterCollapseChips(filters)
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-10%' }}
-      transition={{ duration: 0.6 }}
-      className="sticky top-[92px] z-40 mx-auto max-w-7xl px-4 md:px-8"
-    >
+    <>
+      <div className="sticky top-[92px] z-40 mx-auto max-w-7xl px-4 md:px-8">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-10%' }}
+          transition={{ duration: 0.55 }}
+        >
       {/* Mobile: collapsed */}
       {!expanded ? (
         <div className={`${mobileCard} relative p-4 md:hidden`}>
@@ -405,6 +486,14 @@ export function FilterBar({
       <div className={`${mobileCard} hidden p-4 md:block md:p-6`}>
         <FilterPanelBody chip={chip} {...handlers} />
       </div>
-    </motion.div>
+        </motion.div>
+      </div>
+      {/* Flow anchor after sticky panel: intersects while filters are “on-screen” in layout terms. */}
+      <div
+        ref={sentinelRef}
+        className="pointer-events-none mx-auto h-px max-w-7xl shrink-0 md:hidden"
+        aria-hidden
+      />
+    </>
   )
 }
