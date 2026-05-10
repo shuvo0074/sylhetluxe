@@ -58,15 +58,35 @@ export function Footer() {
             Contact
           </h4>
           <ul className="mt-4 space-y-3 text-sm text-white/65">
-            <li>Concierge studio · Gulshan, Dhaka</li>
+            <li className="leading-relaxed">
+              Dhanmandi 27, Satmasjid Road,
+              <br />
+              Dhaka 1209
+            </li>
             <li>
-              <a href="mailto:hello@sylhetluxestays.demo" className="hover:text-white">
-                hello@sylhetluxestays.demo
+              <a
+                href="mailto:bangladeshtravelguide@gmail.com"
+                className="hover:text-white"
+              >
+                bangladeshtravelguide@gmail.com
+              </a>
+            </li>
+            <li className="flex flex-col gap-1">
+              <a href="tel:+8809697741326" className="hover:text-white">
+                09697741326
+              </a>
+              <a href="tel:+8809697773228" className="hover:text-white">
+                09697773228
               </a>
             </li>
             <li>
-              <a href="tel:+8801710000000" className="hover:text-white">
-                +880 1710‑000‑000
+              <a
+                href="https://www.bangladeshtravelguide.info"
+                className="hover:text-white"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                www.bangladeshtravelguide.info
               </a>
             </li>
           </ul>
@@ -74,10 +94,10 @@ export function Footer() {
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
           <h4 className="text-xs font-semibold uppercase tracking-[0.25em] text-white/40">
-            Newsletter
+            News
           </h4>
           <p className="mt-3 text-sm text-white/58">
-            Field trips, seasonal rates, and new resort debuts across Sylhet.
+            For Better Discount & Experience.
           </p>
           <div className="mt-5 flex gap-2">
             <input
