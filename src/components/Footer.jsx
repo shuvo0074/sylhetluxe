@@ -1,5 +1,23 @@
 import { motion } from 'framer-motion'
 
+const FACEBOOK_PAGE_URL =
+  'https://www.facebook.com/share/18SCyv1Gwm/'
+/** Meta / Facebook primary brand blue */
+const FACEBOOK_BLUE = '#1877F2'
+
+function FacebookIcon({ className = 'h-6 w-6' }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  )
+}
+
 const nav = [
   { label: 'Browse', href: '#browse' },
   { label: 'Featured', href: '#featured' },
@@ -24,15 +42,28 @@ export function Footer() {
             sites.
           </p>
           <div className="flex gap-3 text-white/60">
-            {['in', 'fb', 'ig'].map((s) => (
+            {[
+              ['in', '#', false],
+              ['fb', FACEBOOK_PAGE_URL, true],
+              ['ig', '#', false],
+            ].map(([s, href, isFb]) => (
               <motion.a
                 key={s}
-                href="#"
-                aria-label={s}
+                href={href}
+                aria-label={
+                  isFb ? 'Facebook — Sreemangal Tour Guide' : s
+                }
+                target={href.startsWith('http') ? '_blank' : undefined}
+                rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-xs uppercase"
+                style={isFb ? { color: FACEBOOK_BLUE } : undefined}
                 whileHover={{ scale: 1.08, borderColor: 'rgba(201,169,98,0.45)' }}
               >
-                {s}
+                {isFb ? (
+                  <FacebookIcon className="h-[18px] w-[18px]" />
+                ) : (
+                  s
+                )}
               </motion.a>
             ))}
           </div>
@@ -113,6 +144,21 @@ export function Footer() {
             >
               Join
             </motion.button>
+          </div>
+          <div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-5">
+            <a
+              href={FACEBOOK_PAGE_URL}
+              className="transition hover:opacity-90"
+              style={{ color: FACEBOOK_BLUE }}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Sreemangal Tour Guide on Facebook"
+            >
+              <FacebookIcon className="h-8 w-8" />
+            </a>
+            <span className="text-sm text-white/58">
+              Sreemangal Tour Guide
+            </span>
           </div>
         </div>
       </div>
