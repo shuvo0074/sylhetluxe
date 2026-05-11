@@ -7,10 +7,14 @@
  * still reflects Sylhet outbound / metropolitan / hillside corridors where these
  * assets actually sit.
  *
- * Photos live in /public/hotels/: sourced from each brand site (Grand Sultan,
- * Paragon, Balishira, NOVEM, Grand Sylhet, Tea Villa CDN, Lemon Garden, Nazimgarh),
- * Booking.com CDN (Rangauti), Trip.com CDN (DuSai), Hello Sylhet (Regent Park listing),
- * and bd-info (Palace)—replace when you ship approved media.
+ * Photos live in /public/hotels/: Grand Sylhet’s hero is `welcomethumb.jpg` from the
+ * official grandsylhet.com theme. Where possible, other heroes match Booking.com’s
+ * cf.bstatic.com lead images (Paragon, Nazimgarh Garden Resort Sylhet).
+ * NOVEM (no Booking listing) and Rangauti use Google-sourced `lh3.googleusercontent.com`
+ * exterior stills. Regent Park Resort Sylhet has no Booking listing here—HotelsInBD’s
+ * Regent gallery still mirrors the exterior shown on Maps-style listings.
+ * Other hotels: brand sites, Trip.com, Hello Sylhet, bd-info—replace when you ship approved
+ * media.
  */
 
 /**
@@ -102,7 +106,7 @@ export const hotels = [
     guestCapacity: 5,
     hasFamilyRooms: true,
     price: 6650,
-    image: '/hotels/novem-ecoresort.webp',
+    image: '/hotels/novem-ecoresort.jpg',
     description:
       'Design-led bamboo & clay lodges with saline pool, nature trails and carbon-light operating ethos.',
     amenities: ['Eco build', 'Pool & lifeguard', 'Bicycle hire', 'Family villas'],
