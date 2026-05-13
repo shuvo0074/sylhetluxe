@@ -17,6 +17,8 @@
  * media.
  */
 
+import { HOTEL_GALLERIES } from './hotelGalleries.js'
+
 /**
  * @typedef {{
  *   id: string;
@@ -31,6 +33,7 @@
  *   description: string;
  *   detailBlurb: string;
  *   amenities: string[];
+ *   gallery: { title: string; src: string }[];
  * }} Hotel
  */
 
@@ -47,8 +50,8 @@ export const FEATURED_HOTEL_IDS = [
   'paragon-resort',
 ]
 
-/** @type {Hotel[]} */
-export const hotels = [
+/** @type {Omit<Hotel, 'gallery'>[]} */
+const HOTELS_BASE = [
   {
     id: 'grand-sultan-tea',
     name: 'Grand Sultan Tea Resort & Golf',
@@ -242,6 +245,12 @@ export const hotels = [
       'The Palace’s promotional site casts Bahubal as a kingdom-scale resort—paired skyline towers beside hillside villas on mirror-still lakes—while trade editorials cite half-board packages, ballroom stacks, and weekend premiums echoed in bd-info publicity stills.',
   },
 ]
+
+/** @type {Hotel[]} */
+export const hotels = HOTELS_BASE.map((h) => ({
+  ...h,
+  gallery: HOTEL_GALLERIES[h.id] ?? [{ title: h.name, src: h.image }],
+}))
 
 export function getFeaturedHotels() {
   return FEATURED_HOTEL_IDS.map((id) => hotels.find((h) => h.id === id)).filter(
