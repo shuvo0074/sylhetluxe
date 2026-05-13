@@ -7,6 +7,25 @@ import { formatBDT } from '../utils/format'
  * @typedef {{ title: string; src: string }} GallerySlide
  */
 
+const SLIDE_DURATION = 0.42
+const SLIDE_EASE = [0.22, 1, 0.36, 1]
+
+const slideVariants = {
+  /** @param {number} dir +1 = next (enter from right), -1 = prev (enter from left) */
+  enter: (dir) => ({
+    x: dir === 1 ? '100%' : '-100%',
+    opacity: 0.5,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (dir) => ({
+    x: dir === 1 ? '-100%' : '100%',
+    opacity: 0.5,
+  }),
+}
+
 /** @param {{ slides: GallerySlide[]; hotelId: string }} props */
 function HotelHeroCarousel({ slides, hotelId }) {
   const list = useMemo(
@@ -15,6 +34,7 @@ function HotelHeroCarousel({ slides, hotelId }) {
   )
   const len = list.length
   const [index, setIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
   const [hovered, setHovered] = useState(false)
   const [zoomLocked, setZoomLocked] = useState(false)
   /** Wait for decode before auto-advance so slides do not skip while still loading */
@@ -26,6 +46,7 @@ function HotelHeroCarousel({ slides, hotelId }) {
 
   useEffect(() => {
     setIndex(0)
+    setDirection(1)
     setZoomLocked(false)
     setHovered(false)
     preloadedSrcs.current = new Set()
@@ -61,6 +82,7 @@ function HotelHeroCarousel({ slides, hotelId }) {
   useEffect(() => {
     if (len < 2 || !slideReady) return undefined
     const id = window.setTimeout(() => {
+      setDirection(1)
       setIndex((i) => (i + 1) % len)
     }, AUTO_ADVANCE_MS)
     return () => window.clearTimeout(id)
@@ -68,6 +90,7 @@ function HotelHeroCarousel({ slides, hotelId }) {
 
   const go = useCallback(
     (delta) => {
+      setDirection(delta > 0 ? 1 : -1)
       setSlideReady(false)
       setIndex((i) => (i + delta + len) % len)
     },
@@ -94,22 +117,32 @@ function HotelHeroCarousel({ slides, hotelId }) {
         tabIndex={0}
         aria-label={zoomLocked ? 'Zoomed in — click to reset' : 'Click or hover to zoom photo'}
       >
-        <motion.img
-          ref={imgRef}
-          key={`${hotelId}-${index}-${current.src}`}
-          src={current.src}
-          alt={current.title || 'Hotel photo'}
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-          draggable={false}
-          onLoad={() => setSlideReady(true)}
-          onError={() => setSlideReady(true)}
-          initial={{ opacity: 0.88 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.35 }}
-          className={`relative z-0 h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${zoom ? 'scale-[1.08]' : 'scale-100'}`}
-        />
+        <AnimatePresence initial={false} custom={direction} mode="sync">
+          <motion.div
+            key={`${hotelId}-${index}-${current.src}`}
+            role="presentation"
+            className="absolute inset-0 z-0 h-full w-full"
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: SLIDE_DURATION, ease: SLIDE_EASE }}
+          >
+            <img
+              ref={imgRef}
+              src={current.src}
+              alt={current.title || 'Hotel photo'}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              draggable={false}
+              onLoad={() => setSlideReady(true)}
+              onError={() => setSlideReady(true)}
+              className={`h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${zoom ? 'scale-[1.08]' : 'scale-100'}`}
+            />
+          </motion.div>
+        </AnimatePresence>
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 top-[25%] z-[1] bg-gradient-to-t from-[#070a10]/80 via-[#070a10]/35 to-transparent"
           aria-hidden
