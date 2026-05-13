@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { formatBDT } from '../utils/format'
 
@@ -17,30 +17,62 @@ function HotelHeroCarousel({ slides, hotelId }) {
   const [index, setIndex] = useState(0)
   const [hovered, setHovered] = useState(false)
   const [zoomLocked, setZoomLocked] = useState(false)
+  /** Wait for decode before auto-advance so slides do not skip while still loading */
+  const [slideReady, setSlideReady] = useState(false)
+  const imgRef = useRef(/** @type {HTMLImageElement | null} */ (null))
+  const preloadedSrcs = useRef(/** @type {Set<string>} */ (new Set()))
+
+  const AUTO_ADVANCE_MS = 3000
 
   useEffect(() => {
     setIndex(0)
     setZoomLocked(false)
     setHovered(false)
+    preloadedSrcs.current = new Set()
   }, [hotelId])
 
+  const current = list[index] ?? list[0]
+  const zoom = hovered || zoomLocked
+
+  /** After first paint, prefetch all gallery URLs so later slides hit cache (browser dedupes the active src). */
   useEffect(() => {
     if (len < 2) return undefined
-    const id = window.setInterval(() => {
+    const id = window.setTimeout(() => {
+      for (const slide of list) {
+        const src = slide?.src
+        if (typeof src !== 'string' || preloadedSrcs.current.has(src)) continue
+        preloadedSrcs.current.add(src)
+        const im = new Image()
+        im.src = src
+      }
+    }, 120)
+    return () => window.clearTimeout(id)
+  }, [hotelId, len, list])
+
+  useLayoutEffect(() => {
+    const el = imgRef.current
+    if (el?.complete && el.naturalWidth > 0) {
+      setSlideReady(true)
+    } else {
+      setSlideReady(false)
+    }
+  }, [hotelId, index, current.src])
+
+  useEffect(() => {
+    if (len < 2 || !slideReady) return undefined
+    const id = window.setTimeout(() => {
       setIndex((i) => (i + 1) % len)
-    }, 3000)
-    return () => window.clearInterval(id)
-  }, [len, hotelId])
+    }, AUTO_ADVANCE_MS)
+    return () => window.clearTimeout(id)
+  }, [len, slideReady, index, hotelId])
 
   const go = useCallback(
     (delta) => {
+      setSlideReady(false)
       setIndex((i) => (i + delta + len) % len)
     },
     [len],
   )
-
-  const current = list[index] ?? list[0]
-  const zoom = hovered || zoomLocked
 
   return (
     <div className="relative z-0 h-full w-full bg-[#070a10]">
@@ -63,12 +95,16 @@ function HotelHeroCarousel({ slides, hotelId }) {
         aria-label={zoomLocked ? 'Zoomed in — click to reset' : 'Click or hover to zoom photo'}
       >
         <motion.img
+          ref={imgRef}
           key={`${hotelId}-${index}-${current.src}`}
           src={current.src}
           alt={current.title || 'Hotel photo'}
-          loading={index === 0 ? 'eager' : 'lazy'}
+          loading="eager"
           decoding="async"
+          fetchPriority="high"
           draggable={false}
+          onLoad={() => setSlideReady(true)}
+          onError={() => setSlideReady(true)}
           initial={{ opacity: 0.88 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.35 }}
